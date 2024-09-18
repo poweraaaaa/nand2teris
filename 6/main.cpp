@@ -1,4 +1,4 @@
-#include <iostream>//ÊÊÅäÓĞ·ûºÅ°æ±¾
+#include <iostream>//é€‚é…æœ‰ç¬¦å·ç‰ˆæœ¬
 #include <string>
 #include <fstream>
 #include "assembler.hpp"
@@ -30,7 +30,7 @@ int main() {
 		return 1;
 	}
 	outputName=handchange(inputName);
-	ofstream outputfile(outputName);//ĞÂ½¨prog.asm
+	ofstream outputfile(outputName);//ÃÃ‚Â½Â¨prog.asm
 	if (!outputfile.good())
 	{
 		cerr << "error: unable to open output stream" << endl;
