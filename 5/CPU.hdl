@@ -1,0 +1,74 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/5/CPU.hdl
+/**
+ * The Hack Central Processing unit (CPU).
+ * Parses the binary code in the instruction input and executes it according to the
+ * Hack machine language specification. In the case of a C-instruction, computes the
+ * function specified by the instruction. If the instruction specifies to read a memory
+ * value, the inM input is expected to contain this value. If the instruction specifies
+ * to write a value to the memory, sets the outM output to this value, sets the addressM
+ * output to the target address, and asserts the writeM output (when writeM = 0, any
+ * value may appear in outM).
+ * If the reset input is 0, computes the address of the next instruction and sets the
+ * pc output to that value. If the reset input is 1, sets pc to 0.
+ * Note: The outM and writeM outputs are combinational: they are affected by the
+ * instruction's execution during the current cycle. The addressM and pc outputs are
+ * clocked: although they are affected by the instruction's execution, they commit to
+ * their new values only in the next cycle.
+ */
+CHIP CPU {
+
+    IN  inM[16],         // M value input  (M = contents of RAM[A])
+        instruction[16], // Instruction for execution
+        reset;           // Signals whether to re-start the current
+                         // program (reset==1) or continue executing
+                         // the current program (reset==0).
+
+    OUT outM[16],        // M value output
+        writeM,          // Write to M? 
+        addressM[15],    // Address in data memory (of M)
+        pc[15];          // address of next instruction
+
+    PARTS:
+	Not(in=instruction[15],out=a-);
+	Not(in=a-,out=c-);
+	
+	And(a=instruction[5],b=c-,out=selM);
+	Mux16(a=instruction,b=M,sel=selM,out=out1);//mux1
+	Or(a=a-,b=instruction[5],out=loada);
+
+	ARegister(in=out1,load=loada,out=outa,out[0..14]=addressM);//A
+
+	Mux16(a=outa,b=inM,sel=instruction[12],out=out2);//mux2
+
+	And(a=c-,b=instruction[3],out=writeM);
+
+	And(a=c-,b=instruction[4],out=selD);
+	DRegister(in=M,load=selD,out=outd);//D
+	And(a = c-, b = instruction[6], out = no);
+
+    And(a = c-, b = instruction[7], out = f);
+    And(a = c-, b = instruction[8], out = ny);
+    And(a = c-, b = instruction[9], out = zy);
+    And(a = c-, b = instruction[10], out = nx);
+    And(a = c-, b = instruction[11], out = zx);
+	ALU(x = outd, y = out2,zx = zx, nx = nx, zy = zy, ny = ny, f = f, no = no, out = outM,out=M,zr=zr, ng=ng);
+//计算ALU,M
+	
+	And(a = c-, b = instruction[0], out = i3);
+        And(a = c-, b = instruction[1], out = i1);
+	And(a = c-, b = instruction[2], out = i2);
+
+	And(a=zr,b=i1,out=l1);
+	And(a=ng,b=i2,out=l2);
+	Not(in=ng,out=pg1);
+	Not(in=zr,out=pg2);
+	And(a=pg1,b=pg2,out=pg3);
+	And(a=pg3,b=i3,out=l3);
+	Or(a=l1,b=l2,out=l4);
+	Or(a=l4,b=l3,out=loadpc);//判断跳转
+	PC(reset=reset,inc=true,load=loadpc,in=outa,out[0..14]=pc);//PC
+	
+}
