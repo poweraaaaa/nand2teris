@@ -1,4 +1,4 @@
-#include <iostream>//ÎŞ·ûºÅ°æ±¾
+#include <iostream>//æ— ç¬¦å·ç‰ˆæœ¬
 #include <string>
 #include<bitset>
 #include "Code.hpp"
@@ -8,7 +8,7 @@ using std::string;
 class assembler {
 public:
 	assembler(ifstream& ifile, string iname, ofstream& ofile, string oname);
-	void assemblechoose();//ÅĞ¶ÏĞ´ÈëÄÄÖÖÓï¾ä
+	void assemblechoose();//åˆ¤æ–­å†™å…¥å“ªç§è¯­å¥
 	void assemble_a();
 	void assemble_c();
 
@@ -24,7 +24,7 @@ private:
 	c_type type=c_type::A_COMMAND;
 };
 
-assembler::assembler(ifstream& ifile, string iname, ofstream& ofile, string oname) ://³õÊ¼»¯ÁĞ±í
+assembler::assembler(ifstream& ifile, string iname, ofstream& ofile, string oname) ://åˆå§‹åŒ–åˆ—è¡¨
 	ifile(ifile), iname(iname), ofile(ofile), oname(oname), parser(ifile){}
 
 
@@ -64,5 +64,6 @@ void assembler::assemble_c() {
 	bincommand = bitset<16>(outcommand).to_string();
 	ofile << bincommand << endl;
 }
+
 
 
