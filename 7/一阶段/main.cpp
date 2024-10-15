@@ -46,5 +46,4 @@ int main() {
 	{
 		ifile.close();
 	}
-}//D:\nand2tetris\projects\7\StackArithmetic\SimpleAdd\SimpleAdd.vm
-//D:\nand2tetris\projects\7\StackArithmetic\StackTest\StackTest.vm
+}
